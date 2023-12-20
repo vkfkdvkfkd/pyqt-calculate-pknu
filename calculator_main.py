@@ -83,11 +83,14 @@ class Main(QDialog):
 
     def button_dot_clicked(self):
         equation = self.equation_solution.text()
-        equation += str(".")
-        self.equation_solution.setText(equation)       
+        if "." not in equation:
+            equation += str(".")
+            self.equation_solution.setText(equation)       
 
     def button_operation_clicked(self, operation):
         equation = self.equation_solution.text()
+        if equation == "":
+            equation = "0"
         self.list.append(equation)
         self.list.append(operation)
         self.equation_solution.setText("")
@@ -110,22 +113,11 @@ class Main(QDialog):
         self.equation_solution.setText(equation)
 
     ### 연산 함수
-    def precedence(self, op):
-        if op == "+" or op == "-": return 0
-        elif op == "*" or op == "/": return 1
-        else: return -1
-
     def Infix2Postfix(self, expr):
         stack = []
         output = []
         for term in expr:
             if term in "+-*/":   
-                while len(stack) != 0:
-                    op = stack[-1]
-                    if self.precedence(term) <= self.precedence(op):
-                        output.append(op)
-                        stack.pop()
-                    else: break
                 stack.append(term)
             else:
                 output.append(term)
