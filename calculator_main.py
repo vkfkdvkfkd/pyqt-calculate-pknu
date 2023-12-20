@@ -41,6 +41,7 @@ class Main(QDialog):
         button_clear_entry = QPushButton("CE")
         button_backspace = QPushButton("<-")
         button_dot = QPushButton(".")
+        button_abs = QPushButton("+/-")
 
         ### 숫자 버튼 생성 및 layout_window에 추가
         number_button_dict = {}
