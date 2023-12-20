@@ -103,25 +103,53 @@ class Main(QDialog):
     #################
     def button_number_clicked(self, num):
         equation = self.equation_solution.text()
-        equation += str(num)
-        self.equation_solution.setText(equation)
+        if equation == "0":
+            self.equation_solution.setText(equation.replace("0", str(num)))
+        else:
+            equation += str(num)
+            self.equation_solution.setText(equation)
 
     def button_dot_clicked(self):
         equation = self.equation_solution.text()
+        if equation == "":
+            equation += str("0.")
+            self.equation_solution.setText(equation)            
         if "." not in equation:
             equation += str(".")
             self.equation_solution.setText(equation)       
 
     def button_operation_clicked(self, operation):
         equation = self.equation_solution.text()
-        if equation == "":
+        if equation == "" and len(self.list) == 0:
             equation = "0"
-        self.list.append(equation)
-        self.list.append(operation)
+            self.list.append(equation)
+            self.list.append(operation)
+        elif equation == "" and self.list[-1] in "+-*/%":
+            self.list.pop()
+            self.list.append(operation)
+        elif equation != "" and len(self.list) >= 2:
+            self.list.append(equation)
+            postfix = self.Infix2Postfix(self.list)
+            equation = str(self.evalPostfix(postfix))
+            self.list = []
+            self.list.append(equation)
+            self.list.append(operation)
+        else:
+            self.list.append(equation)
+            self.list.append(operation)
         self.equation_solution.setText("")
         
     def button_unary_operator_clicked(self, operation):
-        return
+        equation = float(self.equation_solution.text())
+        if operation == "1/x":
+            solution = 1 / equation
+            self.equation_solution.setText(str(solution))
+        elif operation == "x^2":
+            solution = equation ** 2
+            self.equation_solution.setText(str(solution))
+        elif operation == "√x":
+            solution = math.sqrt(equation)
+            self.equation_solution.setText(str(solution))
 
     def button_equal_clicked(self):
         value = self.equation_solution.text()
@@ -139,12 +167,21 @@ class Main(QDialog):
         equation = self.equation_solution.text()
         equation = equation[:-1]
         self.equation_solution.setText(equation)
+    
+    def button_abs_clicked(self):
+        equation = self.equation_solution.text()
+        if equation == "":
+            self.equation_solution.setText("0")
+        elif "-" not in equation:
+            self.equation_solution.setText("-" + equation)
+        else:
+            self.equation_solution.setText(equation.replace("-", ""))
 
     def Infix2Postfix(self, expr):
         stack = []
         output = []
         for term in expr:
-            if term in "+-*/":   
+            if term in "+-*/%":   
                 stack.append(term)
             else:
                 output.append(term)
@@ -155,13 +192,14 @@ class Main(QDialog):
     def evalPostfix(self, expr):
         stack = []
         for token in expr:
-            if token in "+-*/":
+            if token in "+-*/%":
                 val2 = stack.pop()
                 val1 = stack.pop()
                 if token == "+": stack.append(val1 + val2)
                 elif token == "-": stack.append(val1 - val2)
                 elif token == "*": stack.append(val1 * val2)
                 elif token == "/": stack.append(val1 / val2)
+                elif token == "%": stack.append(val1 % val2)
             else:
                 stack.append(float(token))
         return stack.pop()
