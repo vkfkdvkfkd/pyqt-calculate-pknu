@@ -1,5 +1,7 @@
 import sys
+import math
 from PyQt5.QtWidgets import *
+
 
 class Main(QDialog):
     def __init__(self):
@@ -21,19 +23,26 @@ class Main(QDialog):
         ### layout_equation_solution 레이아웃에 입출력 위젯을 추가
         layout_equation_solution.addRow(label_equation_solution, self.equation_solution)
 
-        ### 연산 버튼 생성
+        ### 이항 연산 버튼 생성
         button_plus = QPushButton("+")
         button_minus = QPushButton("-")
         button_product = QPushButton("x")
         button_division = QPushButton("/")
+        button_modular = QPushButton("%")
+
+        ### 단항 연산 버튼 생성
+        button_inverse = QPushButton("1/x")
+        button_square = QPushButton("x^2")
+        button_square_root = QPushButton("√x")
 
         ### 기타 기능 버튼 생성
         button_equal = QPushButton("=")
         button_clear = QPushButton("C")
+        button_clear_entry = QPushButton("CE")
         button_backspace = QPushButton("<-")
         button_dot = QPushButton(".")
 
-        ### 숫자 버튼 생성
+        ### 숫자 버튼 생성 및 layout_window에 추가
         number_button_dict = {}
         for number in range(0, 10):
             number_button_dict[number] = QPushButton(str(number))
@@ -45,24 +54,39 @@ class Main(QDialog):
             elif number==0:
                 layout_window.addWidget(number_button_dict[number], 5, 1)
 
-        ### 버튼을 layout_window에 레이아웃에 추가
-        layout_window.addWidget(button_plus, 4, 3)
-        layout_window.addWidget(button_minus, 3, 3)
-        layout_window.addWidget(button_product, 2, 3)
-        layout_window.addWidget(button_division, 1, 3)
-        layout_window.addWidget(button_equal, 5, 3)
+        ### 버튼을 layout_window에 추가
+        layout_window.addWidget(button_modular, 0, 0)
+        layout_window.addWidget(button_clear_entry, 0, 1)
         layout_window.addWidget(button_clear, 0, 2)
         layout_window.addWidget(button_backspace, 0, 3)
+
+        layout_window.addWidget(button_inverse, 1, 0)
+        layout_window.addWidget(button_square, 1, 1)
+        layout_window.addWidget(button_square_root, 1, 2)
+        layout_window.addWidget(button_division, 1, 3)
+        
+        layout_window.addWidget(button_product, 2, 3)
+        layout_window.addWidget(button_minus, 3, 3)
+        layout_window.addWidget(button_plus, 4, 3)
+
+        layout_window.addWidget(button_abs, 5, 0)
         layout_window.addWidget(button_dot, 5, 2)
+        layout_window.addWidget(button_equal, 5, 3)
 
         ### 버튼을 클릭 시
         button_plus.clicked.connect(lambda state, operation = "+": self.button_operation_clicked(operation))
         button_minus.clicked.connect(lambda state, operation = "-": self.button_operation_clicked(operation))
         button_product.clicked.connect(lambda state, operation = "*": self.button_operation_clicked(operation))
         button_division.clicked.connect(lambda state, operation = "/": self.button_operation_clicked(operation))
+        button_modular.clicked.connect(lambda state, operation = "%": self.button_operation_clicked(operation))
+
+        button_inverse.clicked.connect(lambda state, operation = "1/x": self.button_unary_operator_clicked(operation))
+        button_square.clicked.connect(lambda state, operation = "x^2": self.button_unary_operator_clicked(operation))
+        button_square_root.clicked.connect(lambda state, operation = "√x": self.button_unary_operator_clicked(operation))
 
         button_equal.clicked.connect(self.button_equal_clicked)
         button_clear.clicked.connect(self.button_clear_clicked)
+        button_clear_entry.clicked.connect(self.button_clear_clicked)
         button_backspace.clicked.connect(self.button_backspace_clicked)
         button_dot.clicked.connect(self.button_dot_clicked)
 
@@ -95,24 +119,26 @@ class Main(QDialog):
         self.list.append(operation)
         self.equation_solution.setText("")
         
+    def button_unary_operator_clicked(self, operation):
+        return
+
     def button_equal_clicked(self):
         value = self.equation_solution.text()
         self.list.append(value)
         equation = self.Infix2Postfix(self.list)
         solution = self.evalPostfix(equation)
-        self.equation_solution.setText(str(solution))
         self.list = []
+        self.equation_solution.setText(str(solution))
 
     def button_clear_clicked(self):
-        self.equation_solution.setText("")
         self.list = []
+        self.equation_solution.setText("")
 
     def button_backspace_clicked(self):
         equation = self.equation_solution.text()
         equation = equation[:-1]
         self.equation_solution.setText(equation)
 
-    ### 연산 함수
     def Infix2Postfix(self, expr):
         stack = []
         output = []
