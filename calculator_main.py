@@ -45,16 +45,19 @@ class Main(QDialog):
 
         ### 숫자 버튼 생성 및 layout_window에 추가
         number_button_dict = {}
+        count = 11
         for number in range(0, 10):
             number_button_dict[number] = QPushButton(str(number))
             number_button_dict[number].clicked.connect(lambda state, num = number:
                                                        self.button_number_clicked(num))
-            if number >0:
-                x,y = divmod(number-1, 3)
-                layout_window.addWidget(number_button_dict[number], x+2, y)
+            if number > 0:
+                x,y = divmod(count, 3)
+                layout_window.addWidget(number_button_dict[number], x+1, abs(y-2))
+                count -= 1
             elif number==0:
                 layout_window.addWidget(number_button_dict[number], 5, 1)
-
+        del count
+        
         ### 버튼을 layout_window에 추가
         layout_window.addWidget(button_modular, 0, 0)
         layout_window.addWidget(button_clear_entry, 0, 1)
@@ -90,6 +93,7 @@ class Main(QDialog):
         button_clear_entry.clicked.connect(self.button_clear_clicked)
         button_backspace.clicked.connect(self.button_backspace_clicked)
         button_dot.clicked.connect(self.button_dot_clicked)
+        button_abs.clicked.connect(self.button_abs_clicked)
 
         ### 각 레이아웃을 main_layout 레이아웃에 추가
         main_layout.addLayout(layout_equation_solution)
@@ -171,6 +175,8 @@ class Main(QDialog):
     def button_abs_clicked(self):
         equation = self.equation_solution.text()
         if equation == "":
+            self.equation_solution.setText("0")
+        elif equation == "0":
             self.equation_solution.setText("0")
         elif "-" not in equation:
             self.equation_solution.setText("-" + equation)
