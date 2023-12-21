@@ -1,5 +1,5 @@
-# Calculator 
-PyQt5 기반 계산기(https://studyingrabbit.tistory.com/23)를 사용한 연습 프로젝트입니다.
+# PyQt5-Calculator-PKNU 
+PyQt5 기반 계산기(https://studyingrabbit.tistory.com/23) 를 사용한 연습 프로젝트입니다.
 
 # Goals
 - github 저장소 생성 및 관리 실습
@@ -13,7 +13,7 @@ PyQt5 기반 계산기(https://studyingrabbit.tistory.com/23)를 사용한 연�
   - python calculator_main.py
 
 # License
-라이센스 관련 정보는 LICENSE 파일을 참고 부탁드립니다.
+라이센스 관련 정보는 [LICENSE](https://github.com/vkfkdvkfkd/pyqt-calculate-pknu/blob/main/LICENSE) 파일을 참고 부탁드립니다.
 
 # Contributing
 기여 관련 정보는 Contribuing.md 파일을 참고 부탁드립니다.
